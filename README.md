@@ -38,6 +38,20 @@ ClearFuncs类还会暴露 _prep_auth_info()方法，该方法会返回用来认�
 
 通过这两行代码进行认证，就可以拿到root权限，其中CVE-2020-11651.py是该漏洞的利用脚本。
 
+## 攻击步骤简述：
+
+1、Kali执行CVE-2019-7238.py得到一个任意命令执行的权限，通过执行反向连接（Kali nc监听端口，跳板机通过bash命令向该端口发起TCP连接）得到跳板机root权限并拿到其shell。
+
+2、Kali使用msf中的msfvenom的reverse_tcp生成后门木马mshell.elf，并上传至跳板机。
+
+3、跳板机执行mshell.elf，Kali监听该木马执行的端口，会反弹一个meterpretershell给Kali，这样就开启了隧道代理。
+
+4、在msf里面添加跳板机路由（route add）
+
+5、在msf里开启socks4a代理，将代理地址设定为Kali IP，端口任意。接着修改本机proxychain的配置文件，增加刚刚设定的配置信息。
+
+6、最后使用proxychains命令执行靶机漏洞利用脚本CVE-2020-11651.py，渗透成功。
+
 ## 攻击检测思路：
 
 ![image](https://github.com/zhangchi991022/Comprehensive-experiment-of-infomation-security/blob/main/image/5.png)
