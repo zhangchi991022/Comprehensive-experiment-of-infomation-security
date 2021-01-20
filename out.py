@@ -39,3 +39,4 @@ print('White List: '+str(whitelist))
 local='192.168.12.137'
 sniff(filter='ip src {}'.format(local),prn=warn)
 #sniff(filter='ip src {}'.format(local),prn=lambda x : x[IP])
+
